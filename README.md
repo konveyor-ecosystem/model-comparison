@@ -2,7 +2,7 @@
 
 This repo is intended provide a simplified and more rapid way of producing results from various models for comparison than the notebooks at https://github.com/konveyor-ecosystem/kai/blob/main/notebooks
 
-To see hpw the given prompt was assembled and what data went into it you can view the associated notebook.
+To see how the given prompt was assembled and what data went into it you can view the associated notebook.
 
 ## Usage
 - Set up the python environment
