@@ -1,0 +1,53 @@
+ ## Reasoning
+
+   The first step in migrating the Java EE code to Quarkus is to address the issue identified by the static code analysis tool. The issue is that the code uses Enterprise Java Beans (EJBs) with the `@MessageDriven` annotation, which is not supported in Quarkus. Instead, Quarkus uses the Contexts and Dependency Injection (CDI) framework.
+
+   To resolve this issue, we need to replace the `@MessageDriven` annotation with a CDI scope annotation, such as `@ApplicationScoped`. Additionally, we need to remove the `javax.ejb.MessageDriven` and related imports, and replace the `javax.jms.MessageListener` interface with a CDI event listener.
+
+   In the solved example provided, the `@MessageDriven` annotation was replaced with the `@ApplicationScoped` annotation, and the `MessageListener` interface was replaced with a CDI event listener using the `@Incoming` annotation. The `javax.jms` imports were also removed, and the logging was updated to use Quarkus' logging framework.
+
+   ## Updated File
+
+   ```java
+   package org.jboss.as.quickstarts.mdb;
+
+   import io.quarkus.logging.Log;
+   import jakarta.enterprise.context.ApplicationScoped;
+   import jakarta.enterprise.event.Observes;
+   import jakarta.inject.Inject;
+
+   /**
+    * A simple Message Driven Bean that asynchronously receives and processes the messages that are sent to the queue.
+    *
+    * @author Serge Pagop (spagop@redhat.com)
+    */
+   @ApplicationScoped
+   public class HelloWorldQueueMDB {
+
+       private static final Log LOG = Log.getLogger(HelloWorldQueueMDB.class);
+
+       @Inject
+       public HelloWorldQueueMDB(@Observes String event) {
+           LOG.info("Received Message from queue: " + event);
+       }
+   }
+   ```
+
+   In the updated file, we have removed the `@MessageDriven` annotation and replaced it with the `@ApplicationScoped` annotation. We have also removed the `javax.ejb.MessageDriven` and related imports, and replaced the `javax.jms.MessageListener` interface with a CDI event listener using the `@Observes` annotation. The `javax.jms` imports were also removed, and the logging was updated to use Quarkus' logging framework.
+
+   The `@Inject` annotation is used to inject the event into the constructor of the `HelloWorldQueueMDB` class. This allows the class to receive the message as a parameter when the event is triggered.
+
+   The updated file does not include the code to send messages to the queue, as this functionality is not provided by Quarkus out of the box. If this functionality is required, it will need to be implemented using a different mechanism, such as the MicroProfile Reactive Messaging or SmallRye Reactive Messaging extensions.
+
+   ## pom.xml
+
+   The changes to the Java code do not require any changes to the `pom.xml` file. However, if you are using any Quarkus-specific dependencies, you will need to add them to the `pom.xml` file. For example, to use the MicroProfile Reactive Messaging extension, you would add the following dependency:
+
+   ```xml
+   <dependency>
+       <groupId>io.quarkus</groupId>
+       <artifactId>quarkus-reactive-messaging-amqp</artifactId>
+   </dependency>
+   ```
+
+   This dependency provides support for sending and receiving messages using the Advanced Message Queuing Protocol (AMQP). If you are using a different messaging protocol, you will need to use a different Quarkus extension instead.
