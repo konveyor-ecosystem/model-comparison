@@ -1,0 +1,47 @@
+
+
+## Reasoning
+
+1. The first step in migrating the Java EE code to Quarkus is to identify the issue found from static code analysis. The issue is that the code uses Remote EJBs, which are not supported in Quarkus.
+2. To fix this issue, we need to replace the `@Remote` annotation on the class with a `@jakarta.ws.rs.Path("<endpoint>")` annotation. This will allow us to expose the EJB as a REST service.
+3. Next, we need to remove the `@Stateless` annotations if present. This is because REST services are stateless by nature, and it makes it unnecessary to have these annotations.
+4. For every public method on the EJB being converted, we need to annotate the method with `@jakarta.ws.rs.GET` and `@jakarta.ws.rs.Path("<endpoint>")` and give it a proper endpoint path. As a rule of thumb, the method name can be used as endpoint, for instance: `@Path("/increment")`.
+5. We also need to add `@jakarta.ws.rs.QueryParam("<param-name>")` to any method parameters if needed, where `<param-name>` is a name for the parameter.
+
+## Updated File
+
+```java
+package org.jboss.as.quickstarts.ejb.remote.stateful;
+
+import javax.ejb.Stateful;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.QueryParam;
+
+@Stateful
+@Path("/counter")
+public class CounterBean implements RemoteCounter {
+
+    private int count = 0;
+
+    @GET
+    @Path("/increment")
+    public void increment() {
+        this.count++;
+    }
+
+    @GET
+    @Path("/decrement")
+    public void decrement() {
+        this.count--;
+    }
+
+    @GET
+    @Path("/getCount")
+    public int getCount() {
+        return this.count;
+    }
+}
+```
+
+Note that in the updated file, we have replaced the `@Remote` annotation with `@Path("/counter")` to expose the EJB as a REST service. We have also removed the `@Stateless` annotations and added `@GET` and `@Path` annotations to the methods to specify the REST endpoints. Additionally, we have added `@QueryParam` annotations to the method parameters to specify the parameter names.

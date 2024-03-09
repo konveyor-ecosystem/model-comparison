@@ -1,0 +1,82 @@
+ ## Reasoning
+
+   The given Java EE code is an example of a stateful EJB named `CounterBean` which is annotated with `@Stateful` and `@Remote`. This EJB has three methods: `increment()`, `decrement()`, and `getCount()`. The EJB is also annotated with `@Remote(RemoteCounter.class)`, which indicates that it is a remote EJB.
+
+   According to the provided static code analysis information, remote EJBs are not supported in Quarkus, and they must be replaced with REST functionality. To migrate this Java EE code to Quarkus, we need to follow the steps mentioned in the analysis:
+
+   1. Replace the `@Remote` annotation on the class with a `@jakarta.ws.rs.Path("<endpoint>")` annotation. An endpoint must be added to the annotation in place of `<endpoint>` to specify the actual path to the REST service.
+   2. Remove `@Stateless` annotations if present. Given that REST services are stateless by nature, it makes it unnecessary.
+   3. For every public method on the EJB being converted, do the following:
+      - Annotate the method with `@jakarta.ws.rs.GET`
+      - Annotate the method with `@jakarta.ws.rs.Path("<endpoint>")` and give it a proper endpoint path. As a rule of thumb, the method name can be used as endpoint, for instance:
+        ```
+        @Path("/increment")
+        @GET
+        public void increment() {
+            // method implementation
+        }
+        ```
+      - Add `@jakarta.ws.rs.QueryParam("<param-name>")` to any method parameters if needed, where `<param-name>` is a name for the parameter.
+
+   In this case, since the EJB is a stateful bean, we need to make sure that the state is managed outside of the REST service. One way to do this is by using a database or an in-memory data structure to store the state. In Quarkus, we can use a database or a cache to manage the state.
+
+   ## Updated File
+
+   ```java
+   package org.jboss.as.quickstarts.quarkus;
+
+   import javax.inject.Inject;
+   import javax.ws.rs.GET;
+   import javax.ws.rs.Path;
+   import javax.ws.rs.core.Context;
+   import javax.ws.rs.core.Response;
+   import javax.ws.rs.core.UriInfo;
+
+   @Path("/counter")
+   public class CounterResource {
+
+       private int count;
+
+       @Inject
+       CounterRepository counterRepository;
+
+       @GET
+       @Path("/increment")
+       public Response increment() {
+           count = counterRepository.increment();
+           return Response.ok().entity(count).build();
+       }
+
+       @GET
+       @Path("/decrement")
+       public Response decrement(@Context UriInfo uriInfo) {
+           int id = Integer.parseInt(uriInfo.getQueryParameters().getFirst("id"));
+           count = counterRepository.decrement(id);
+           return Response.ok().entity(count).build();
+       }
+
+       @GET
+       @Path("/{id}")
+       public Response getCount(@Context UriInfo uriInfo) {
+           int id = Integer.parseInt(uriInfo.getPathParameters().getFirst("id"));
+           count = counterRepository.getCount(id);
+           return Response.ok().entity(count).build();
+       }
+   }
+
+   interface CounterRepository {
+       int increment();
+       int decrement(int id);
+       int getCount(int id);
+   }
+   ```
+
+   In the updated file, we have removed the `@Stateful` and `@Remote` annotations and replaced them with `@Path` and `@GET` annotations. We have also removed the `RemoteCounter` interface and replaced it with a new interface named `CounterRepository`. The methods in the `CounterResource` class are annotated with `@Path` and `@GET` annotations, and their endpoints are defined accordingly. The state is managed using a `CounterRepository` interface, which can be implemented using a database or an in-memory data structure.
+
+   The `CounterResource` class is injected with a `CounterRepository` instance using the `@Inject` annotation. The `UriInfo` class is injected to extract the query and path parameters.
+
+   The `CounterRepository` interface has three methods: `increment()`, `decrement(int id)`, and `getCount(int id)`. These methods can be implemented using a database or an in-memory data structure to manage the state.
+
+   The `CounterBean` class in the original Java EE code has been replaced with a new `CounterResource` class in the updated Quarkus code. The `CounterBean` class was a stateful EJB, but in Quarkus, we have replaced it with a stateless REST service. The state is managed outside of the REST service using a `CounterRepository` interface.
+
+   The `pom.xml` file will need to be updated to include the Quarkus dependencies and remove the Java EE dependencies. The updated `pom.xml` file is not provided in this example, but it can be generated using the Quarkus Quickstart Generator or by manually adding the required dependencies.

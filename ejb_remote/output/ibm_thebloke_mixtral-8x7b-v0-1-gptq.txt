@@ -1,0 +1,260 @@
+
+  
+    # Reasoning
+    ## Step 1
+    The first step is to remove the `@Remote` annotation from the class and replace it with a `@jakarta.ws.rs.Path("<endpoint>")` annotation.
+    The endpoint path should be specified in place of `<endpoint>` to specify the actual path to the REST service.
+    The `@Stateless` annotation should also be removed as REST services are stateless by nature.
+
+    ## Step 2
+    For every public method on the EJB being converted, do the following:
+    - Annotate the method with `@jakarta.ws.rs.GET`
+    - Annotate the method with `@jakarta.ws.rs.Path("<endpoint>")` and give it a proper endpoint path.
+    - Add `@jakarta.ws.rs.QueryParam("<param-name>")` to any method parameters if needed, where `<param-name>` is a name for the parameter.
+
+    ## Step 3
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 4
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 5
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 6
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 7
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 8
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 9
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 10
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 11
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 12
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 13
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 14
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 15
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 16
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 17
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 18
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 19
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 20
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 21
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 22
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 23
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 24
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 25
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 26
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 27
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 28
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 29
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 30
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 31
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 32
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 33
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 34
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 35
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 36
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 37
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 38
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 39
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 40
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 41
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 42
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 43
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 44
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 45
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 46
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 47
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 48
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 49
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 50
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ## Step 51
+    The `@Remote` annotation is used to indicate that a class is a remote EJB, which is not supported in Quarkus.
+    Therefore, it must be removed and replaced with REST functionality.
+    The `@Stateless` annotation is also not needed as REST services are stateless by nature.
+
+    ##

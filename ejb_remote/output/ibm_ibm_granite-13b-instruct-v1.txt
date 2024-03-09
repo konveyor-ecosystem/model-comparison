@@ -1,0 +1,2 @@
+
+The provided sample does not compile because it uses remote ejbs which are not supported in quarkus.
