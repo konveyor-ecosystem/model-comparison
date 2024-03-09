@@ -1,0 +1,48 @@
+
+## Reasoning
+
+1. The first step is to analyze the issue found in the JavaEE code. The issue is that the `@PersistenceContext` annotation is used to inject a data source in JavaEE/JakartaEE, but in Quarkus, a datasource is configured and the `@Produces` annotation on the `EntityManager` is not needed.
+2. The solved example shows how we handled a similar issue in the past. We changed the scope of the `Resources` class from `@Stateful @RequestScoped` to `@SessionScoped` and removed the `@Produces` annotation from the `getEm()` method.
+3. In the input file, we see that the `Resources` class is `@RequestScoped` and has a `@Produces` annotation on the `getEm()` method.
+4. To fix the issue, we need to change the scope of the `Resources` class to `@SessionScoped` and remove the `@Produces` annotation from the `getEm()` method.
+5. We also need to add the `@ExtendedContext` qualifier to the `getEm()` method and every injection point for the `EntityManager`.
+6. The `FacesContext` producer method is not needed in Quarkus, so we can remove it.
+7. The `PersistenceContextType` import needs to be changed from `javax.persistence` to `jakarta.persistence`.
+8. The `EntityManager` import needs to be changed from `javax.persistence` to `jakarta.persistence`.
+9. The `InjectionPoint` import needs to be changed from `javax.enterprise.inject.spi` to `jakarta.enterprise.inject`.
+10. The `FacesContext` import needs to be removed.
+
+## Updated File
+
+```java
+package org.jboss.as.quickstarts.greeter;
+
+import java.util.logging.Logger;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+@SessionScoped
+public class Resources {
+
+    // Expose an entity manager using the resource producer pattern
+    @PersistenceContext
+    private EntityManager em;
+
+    @Produces
+    @ExtendedContext
+    public EntityManager getEm() {
+        return em;
+    }
+
+    @Produces
+    public Logger getLogger(InjectionPoint ip) {
+        String category = ip.getMember().getDeclaringClass().getName();
+        return Logger.getLogger(category);
+    }
+
+}
+```

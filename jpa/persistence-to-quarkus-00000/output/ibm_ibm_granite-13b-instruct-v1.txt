@@ -1,0 +1,2 @@
+
+The provided solution assumes you already know how to create a basic Spring Boot application using Maven. It then uses Gradle build tool instead of Maven's default packaging mechanism.

@@ -1,0 +1,50 @@
+## Reasoning
+
+To migrate the `Resources.java` file from Java EE to Quarkus, we need to address the issue identified by the static code analysis. The issue is related to the use of `@PersistenceContext` and `@Produces` annotations together, which is not the correct approach in Quarkus. In Quarkus, the `EntityManager` is automatically produced when the datasource is configured correctly, so we don't need to manually produce it using the `@Produces` annotation.
+
+Here are the steps we will follow to update the file:
+
+1. Remove the `@Produces` annotation from the `EntityManager` as it is not needed in Quarkus.
+2. Ensure that the datasource is configured correctly in the `application.properties` file so that Quarkus can automatically produce the `EntityManager`.
+3. Update the import statements to use the Jakarta namespace (`jakarta.*`) instead of the `javax.*` namespace, as Quarkus has adopted Jakarta EE APIs.
+4. Since we are removing the `@Produces` annotation for the `EntityManager`, we do not need to create a custom qualifier as suggested by the static analysis issue. However, if there were multiple `EntityManager` instances, we would need to create a qualifier to distinguish between them.
+5. The `Logger` producer method and the `FacesContext` producer method can remain unchanged, except for updating the import statements to use Jakarta EE APIs.
+
+We also need to consider the impact on the `pom.xml` file. We should ensure that the Quarkus dependencies are correctly added and that any Java EE dependencies are replaced with their Jakarta EE equivalents or removed if they are provided by Quarkus.
+
+## Updated File
+
+```java
+package org.jboss.as.quickstarts.greeter;
+
+import java.util.logging.Logger;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.faces.context.FacesContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+public class Resources {
+
+    // The EntityManager is automatically produced by Quarkus when the datasource is configured
+    @PersistenceContext
+    private EntityManager em;
+
+    @Produces
+    public Logger getLogger(InjectionPoint ip) {
+        String category = ip.getMember().getDeclaringClass().getName();
+        return Logger.getLogger(category);
+    }
+
+    @Produces
+    @RequestScoped
+    public FacesContext getFacesContext() {
+        return FacesContext.getCurrentInstance();
+    }
+
+}
+```
+
+Please note that the `@Produces` annotation has been removed from the `EntityManager` declaration. The import statements have been updated to use the `jakarta.*` namespace. The `application.properties` file should be configured to ensure that the datasource is set up correctly for Quarkus to automatically produce the `EntityManager`.

@@ -1,0 +1,15 @@
+## Reasoning
+1. The issue found in the static code analysis is related to the persistence configuration in the XML file. The recommendation is to move the persistence related configuration from an XML file to a properties file for centralization in Quarkus.
+2. The provided example shows how the datasource and persistence configurations in XML can be substituted with a single centralized properties file.
+3. The translation provided in the example shows the equivalent properties that need to be set in the Quarkus application.properties file.
+4. The key changes required are to remove the XML configuration related to datasource and persistence and add the equivalent properties in the Quarkus application.properties file.
+
+## Updated File
+```java
+quarkus.datasource.jdbc.url=jdbc:h2:mem:tasks-jsf-quickstart;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
+quarkus.datasource.db-kind=h2
+quarkus.datasource.username=sa
+quarkus.datasource.password=sa
+
+quarkus.hibernate-orm.database.generation=drop-and-create
+```

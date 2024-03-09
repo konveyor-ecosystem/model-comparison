@@ -1,0 +1,5 @@
+# JPA Related incidents
+
+The template is based on what is produced by the notebook at
+https://github.com/konveyor-ecosystem/kai/blob/main/notebooks/jpa/02_few_shot_persistence-to-quarkus-00011.ipynb
+

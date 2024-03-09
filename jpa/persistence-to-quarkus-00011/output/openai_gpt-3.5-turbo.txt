@@ -1,0 +1,55 @@
+## Reasoning
+1. The issue found in the static code analysis is that using `@PersistenceContext` in Java EE is not needed in Quarkus, as Quarkus automatically creates the bean when the datasource is correctly set up.
+2. The `@Produces` annotation on the `EntityManager` is illegal in Quarkus, so it needs to be removed.
+3. If the producer is still needed, a qualification for the produced `EntityManager` needs to be created, along with every injection point for the `EntityManager`.
+4. In the solved example, a new qualifier `@ExtendedContext` was created to inject the `EntityManager`.
+5. The `@RequestScoped` annotation needs to be replaced with `@SessionScoped` in Quarkus due to the loss of `ConversationScoped`.
+6. The `FacesContext` producer method can be removed as it is not relevant in Quarkus.
+
+## Updated File
+```java
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
+ * contributors by the @authors tag. See the copyright.txt in the
+ * distribution for a full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.as.quickstarts.greeter;
+
+import java.util.logging.Logger;
+
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
+public class Resources {
+
+    @PersistenceContext(type = PersistenceContextType.EXTENDED)
+    private EntityManager em;
+
+    @Produces
+    @ExtendedContext
+    public EntityManager getEm() {
+        return em;
+    }
+
+    @Produces
+    public Logger getLogger(InjectionPoint ip) {
+        String category = ip.getMember().getDeclaringClass().getName();
+        return Logger.getLogger(category);
+    }
+
+}
+```
