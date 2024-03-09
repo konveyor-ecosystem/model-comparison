@@ -1,0 +1,11 @@
+
+I am not sure how to migrate the following code to Quarkus. Can you please help me?
+
+The code is as follows:
+
+org.jboss.as.quickstarts.ejb.remote.stateless.CounterBean.java
+
+The Quarkus equivalent is as follows:
+
+org.jboss.as.quickstarts.stateless.CounterBean.java
+

@@ -1,0 +1,59 @@
+## Reasoning
+
+1. The first step is to remove the `@Remote` annotation on the class since Remote EJBs are not supported in Quarkus. Instead, we will replace it with a `@jakarta.ws.rs.Path("<endpoint>")` annotation. This annotation is used to specify the actual path to the REST service. We need to provide a proper endpoint path in place of `<endpoint>`.
+
+2. The `@Stateful` annotation is not required in Quarkus since REST services are stateless by nature. Therefore, we can remove the `@Stateful` annotation if present.
+
+3. For each public method in the EJB being converted, we need to make the following changes:
+   - Annotate the method with `@jakarta.ws.rs.GET` to indicate that it is a GET request.
+   - Annotate the method with `@jakarta.ws.rs.Path("<endpoint>")` and provide a proper endpoint path. As a rule of thumb, we can use the method name as the endpoint.
+   - Add `@jakarta.ws.rs.QueryParam("<param-name>")` to any method parameters if needed. This annotation is used to specify a query parameter for the method.
+
+## Updated File
+```java
+/*
+ * JBoss, Home of Professional Open Source
+ * Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
+ * contributors by the @authors tag. See the copyright.txt in the
+ * distribution for a full listing of individual contributors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.jboss.as.quickstarts.ejb.remote.stateful;
+
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.QueryParam;
+
+@Path("/counter")
+public class CounterBean {
+
+    private int count = 0;
+
+    @GET
+    @Path("/increment")
+    public void increment() {
+        this.count++;
+    }
+
+    @GET
+    @Path("/decrement")
+    public void decrement() {
+        this.count--;
+    }
+
+    @GET
+    @Path("/getCount")
+    public int getCount() {
+        return this.count;
+    }
+}
+```
