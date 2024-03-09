@@ -1,0 +1,60 @@
+ ## Reasoning
+
+   The given Java EE code uses `@PersistenceContext` and `@Produces` annotations together to inject and produce an EntityManager. However, as per the static code analysis, Quarkus does not support having a `@Produces` annotation on the `EntityManager` if it is not needed after configuring the datasource. Instead, Quarkus will create the bean automatically.
+
+   To address this issue, we need to remove the `@Produces` annotation from the `EntityManager` if it is not required. If the producer is still needed, we should create a qualifier for the produced `EntityManager` and every injection point for the EM.
+
+   In the given Java EE code, the `Resources` class is a `@RequestScoped` bean that produces an `EntityManager` and a `Logger`. Since the `EntityManager` is being produced, it is likely that it is being used as a dependency in other parts of the application. In this case, we will create a qualifier named `@ExtendedContext` and apply it to the `EntityManager` and its injections.
+
+   ## Updated File
+
+   ```java
+   package org.jboss.as.quickstarts.greeter;
+
+   import java.util.logging.Logger;
+
+   import jakarta.enterprise.context.RequestScoped;
+   import jakarta.enterprise.inject.Produces;
+   import jakarta.enterprise.inject.spi.InjectionPoint;
+   import jakarta.persistence.EntityManager;
+   import jakarta.persistence.PersistenceContext;
+
+   public class Resources {
+
+       // Use @PersistenceContext without @Produces
+       @PersistenceContext(name = "myDatasource")
+       private EntityManager em;
+
+       @Produces
+       @RequestScoped
+       @ExtendedContext
+       public EntityManager getEm() {
+           return em;
+       }
+
+       @Produces
+       public Logger getLogger(InjectionPoint ip) {
+           String category = ip.getMember().getDeclaringClass().getName();
+           return Logger.getLogger(category);
+       }
+
+       @Produces
+       @RequestScoped
+       @ExtendedContext
+       public FacesContext getFacesContext() {
+           return FacesContext.getCurrentInstance();
+       }
+
+       // Create a qualifier for EntityManager
+       @Qualifier
+       @Target(ElementType.TYPE)
+       @Retention(RetentionPolicy.RUNTIME)
+       public @interface ExtendedContext {
+       }
+   }
+
+   ```
+
+   In the updated file, we have removed the `@Produces` annotation from the `EntityManager` and added the `@PersistenceContext` annotation with a `name` attribute to specify the datasource name. We have also created a `@ExtendedContext` qualifier and applied it to the `EntityManager` and its injections.
+
+   Regarding the pom.xml, no changes are required as the dependencies are already compatible with Quarkus. However, if there are any other dependencies that need to be updated, they should be addressed accordingly.

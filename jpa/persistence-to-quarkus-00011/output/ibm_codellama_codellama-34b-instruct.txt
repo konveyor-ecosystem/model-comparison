@@ -1,0 +1,45 @@
+
+
+## Reasoning
+
+1. The first step is to identify the issue that needs to be addressed. The issue is that the `@PersistenceContext` annotation is being used to inject a data source, which is not needed in Quarkus. Instead, Quarkus will automatically create the bean for the data source.
+2. To fix this issue, we need to remove the `@PersistenceContext` annotation and replace it with `@Inject` to inject the EntityManager.
+3. However, we also need to consider the impact of this change on the pom.xml file. We need to remove the dependency on the `javax.persistence` API, as it is not needed in Quarkus.
+4. Additionally, we need to update the imports in the file to use the `jakarta.persistence` API instead of the `javax.persistence` API.
+
+## Updated File
+
+```java
+package org.jboss.as.quickstarts.greeter;
+
+import java.util.logging.Logger;
+
+import jakarta.enterprise.context.RequestScoped;
+import jakarta.enterprise.inject.Produces;
+import jakarta.enterprise.inject.spi.InjectionPoint;
+import jakarta.faces.context.FacesContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContextType;
+
+public class Resources {
+
+    // Expose an entity manager using the resource producer pattern
+    @Produces
+    private EntityManager em;
+
+    @Produces
+    public Logger getLogger(InjectionPoint ip) {
+        String category = ip.getMember().getDeclaringClass().getName();
+        return Logger.getLogger(category);
+    }
+
+    @Produces
+    @RequestScoped
+    public FacesContext getFacesContext() {
+        return FacesContext.getCurrentInstance();
+    }
+
+}
+```
+
+Note: The `PersistenceContextType` enum is not needed in Quarkus, as it is not used in the updated code.

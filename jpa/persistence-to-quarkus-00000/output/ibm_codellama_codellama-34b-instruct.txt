@@ -1,0 +1,130 @@
+
+
+## Reasoning
+
+The first step in migrating the Java EE code to Quarkus is to identify the issue that needs to be addressed. The issue found from static code analysis is that the persistence related configuration is in an XML file, which needs to be moved to a properties file to centralize the configuration in Quarkus.
+
+To address this issue, we need to create a new properties file that contains the configuration for the datasource and persistence unit. The properties file should be named "application.properties" and should be located in the "src/main/resources" directory.
+
+The next step is to update the "src/main/resources/META-INF/persistence.xml" file to remove the persistence unit configuration and replace it with a reference to the new properties file.
+
+Finally, we need to update the "pom.xml" file to include the Quarkus dependencies and remove the Java EE dependencies.
+
+## Updated File
+
+Here is the updated "src/main/resources/META-INF/persistence.xml" file:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+    xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://xmlns.jcp.org/xml/ns/persistence
+        http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+    <persistence-unit name="primary">
+        <!-- If you are running in a production environment, add a managed
+            data source, this example data source is just for development and testing! -->
+        <!-- The datasource is deployed as WEB-INF/greeter-quickstart-ds.xml,
+            you can find it in the source at src/main/webapp/WEB-INF/greeter-quickstart-ds.xml -->
+        <jta-data-source>java:jboss/datasources/GreeterQuickstartDS</jta-data-source>
+        <properties>
+            <!-- Properties for Hibernate -->
+            <property name="hibernate.hbm2ddl.auto" value="create-drop" />
+            <property name="hibernate.show_sql" value="false" />
+        </properties>
+    </persistence-unit>
+</persistence>
+```
+And here is the updated "src/main/resources/application.properties" file:
+```
+quarkus.datasource.jdbc.url=jdbc:h2:mem:tasks-jsf-quickstart;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
+quarkus.datasource.db-kind=h2
+quarkus.datasource.username=sa
+quarkus.datasource.password=sa
+
+quarkus.hibernate-orm.database.generation=drop-and-create
+```
+And here is the updated "pom.xml" file:
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>quarkus-javaee-migration</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>quarkus-javaee-migration</name>
+    <description>Quarkus Java EE Migration</description>
+
+    <properties>
+        <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
+        <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
+        <quarkus.platform.version>2.5.2.Final</quarkus.platform.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>${quarkus.platform.group-id}</groupId>
+                <artifactId>${quarkus.platform.artifact-id}</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-hibernate-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-jdbc-postgresql</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-resteasy</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>io.quarkus</groupId>
+                <artifactId>quarkus-maven-plugin</artifactId>
+                <version>${quarkus.platform.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+```

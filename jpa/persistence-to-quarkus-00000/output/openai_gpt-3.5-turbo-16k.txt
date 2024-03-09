@@ -1,0 +1,24 @@
+## Reasoning
+The issue found in the static code analysis is related to the persistence configuration in the Java EE code. In Quarkus, it is recommended to move the persistence related configuration from an XML file to a properties file. This allows for centralization of the configuration in Quarkus.
+
+To address this issue, we need to update the `persistence.xml` file to use a properties file for the persistence configuration.
+
+## Updated File
+```java
+# application.properties
+
+# Datasource configuration
+quarkus.datasource.jdbc.url=jdbc:h2:mem:tasks-jsf-quickstart;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1
+quarkus.datasource.db-kind=h2
+quarkus.datasource.username=sa
+quarkus.datasource.password=sa
+
+# Hibernate configuration
+quarkus.hibernate-orm.database.generation=drop-and-create
+```
+
+In the updated file, we have replaced the XML configuration with properties configuration. The `quarkus.datasource.jdbc.url` property specifies the JDBC URL for the datasource. The `quarkus.datasource.db-kind` property specifies the type of database. The `quarkus.datasource.username` and `quarkus.datasource.password` properties specify the username and password for the datasource.
+
+Additionally, we have added the `quarkus.hibernate-orm.database.generation` property to configure the database generation strategy for Hibernate. In this case, we are using the "drop-and-create" strategy.
+
+Please note that the updated file should be named `application.properties` and placed in the `src/main/resources` directory.
