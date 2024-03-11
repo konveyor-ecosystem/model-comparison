@@ -1,10 +1,7 @@
 ## Reasoning
 1. The issue found from static code analysis is that the `@MessageDriven` annotation is not supported in Quarkus and needs to be replaced with a CDI scope annotation like `@ApplicationScoped`.
-2. Looking at the solved example, we can see that the `@MessageDriven` annotation was replaced with `@ApplicationScoped`.
-3. The `import` statements for `javax.ejb.ActivationConfigProperty`, `javax.ejb.MessageDriven`, `javax.jms.JMSException`, `javax.jms.Message`, and `javax.jms.MessageListener` are no longer needed and can be removed.
-4. The `import` statement for `java.util.logging.Logger` can be replaced with `io.quarkus.logging.Log`.
-5. The `onMessage` method needs to be updated to accept a `String` parameter instead of a `Message` parameter.
-6. The logging statement in the `onMessage` method needs to be updated to use `Log.info` instead of `LOGGER.info`.
+2. To address this issue, we need to replace the `@MessageDriven` annotation with `@ApplicationScoped`.
+3. We also need to update the import statements to use the correct annotations from the Quarkus and Jakarta EE namespaces.
 
 ## Updated File
 ```java
@@ -26,9 +23,15 @@
  */
 package org.jboss.as.quickstarts.mdb;
 
+import java.util.logging.Logger;
+import jakarta.ejb.ActivationConfigProperty;
+import jakarta.ejb.MessageDriven;
+import jakarta.jms.JMSException;
+import jakarta.jms.Message;
+import jakarta.jms.MessageListener;
+import jakarta.jms.TextMessage;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 /**
  * <p>
@@ -38,11 +41,30 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
  * @author Serge Pagop (spagop@redhat.com)
  */
 @ApplicationScoped
-public class HelloWorldQueueMDB {
+@MessageDriven(name = "HelloWorldQueueMDB", activationConfig = {
+        @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/HELLOWORLDMDBQueue"),
+        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
+        @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge")})
+public class HelloWorldQueueMDB implements MessageListener {
 
-    @Incoming("HELLOWORLDMDBQueue")
-    public void onMessage(String msg) {
-        Log.info("Received Message from queue: " + msg);
+    private static final Logger LOGGER = Logger.getLogger(HelloWorldQueueMDB.class.toString());
+
+    /**
+     * @see MessageListener#onMessage(Message)
+     */
+    @Override
+    public void onMessage(Message rcvMessage) {
+        TextMessage msg = null;
+        try {
+            if (rcvMessage instanceof TextMessage) {
+                msg = (TextMessage) rcvMessage;
+                Log.info("Received Message from queue: " + msg.getText());
+            } else {
+                Log.warning("Message of wrong type: " + rcvMessage.getClass().getName());
+            }
+        } catch (JMSException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 ```

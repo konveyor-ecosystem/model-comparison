@@ -68,9 +68,9 @@ if os.environ.get('GENAI_KEY') is not None:
         decoding_method=DecodingMethod.SAMPLE,
         max_new_tokens=4096,
         min_new_tokens=10,
-        temperature=0.1,
-        top_k=50,
-        top_p=1,
+        temperature=0.05,
+        top_k=20,
+        top_p=0.9,
         return_options=TextGenerationReturnOptions(input_text=False, input_tokens=True),
       ),
       moderations=ModerationParameters(
@@ -97,7 +97,6 @@ if os.environ.get('GENAI_KEY') is not None:
             "mistralai/mistral-7b-instruct-v0-2",
             "thebloke/mixtral-8x7b-v0-1-gptq"
             ]
-
   prompt_template = """
   <s>[INST] <<SYS>>
   You are an AI Assistant trained on migrating enterprise JavaEE code to Quarkus.
@@ -116,9 +115,9 @@ if os.environ.get('GENAI_KEY') is not None:
         decoding_method=DecodingMethod.SAMPLE,
         max_new_tokens=4096,
         min_new_tokens=10,
-        temperature=0.1,
-        top_k=50,
-        top_p=1,
+        temperature=0.05,
+        top_k=20,
+        top_p=0.9,
         return_options=TextGenerationReturnOptions(input_text=False, input_tokens=True),
       ),
       moderations=ModerationParameters(
