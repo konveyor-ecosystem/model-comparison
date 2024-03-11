@@ -1,8 +1,8 @@
 ## Reasoning
-1. The static code analysis highlighted that EJBs are not supported in Quarkus and CDI must be used instead.
-2. The `@MessageDriven` annotation needs to be replaced with a CDI scope annotation like `@ApplicationScoped`.
-3. The `MessageListener` interface and related JMS imports are no longer needed in Quarkus, as we will be using MicroProfile Reactive Messaging instead.
-4. The `onMessage` method needs to be updated to accept a `String` parameter instead of a `Message` parameter.
+1. The issue found from static code analysis is that Enterprise Java Beans (EJBs) are not supported in Quarkus and CDI must be used instead. Therefore, the `@MessageDriven` annotation needs to be replaced with a CDI scope annotation like `@ApplicationScoped`.
+2. The solved example provided a clear pattern of how to update the Java EE code to Quarkus by replacing the `@MessageDriven` annotation with `@ApplicationScoped` and updating the method signature to use `@Incoming` annotation from MicroProfile Reactive Messaging.
+3. The `Logger` import needs to be replaced with `Log` from Quarkus logging.
+4. The `jakarta.enterprise.context.ApplicationScoped` import needs to be added for the CDI scope annotation.
 
 ## Updated File
 ```java
@@ -24,9 +24,13 @@
  */
 package org.jboss.as.quickstarts.mdb;
 
-import org.eclipse.microprofile.reactive.messaging.Incoming;
 import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+
+import javax.jms.JMSException;
+import javax.jms.Message;
+import javax.jms.TextMessage;
 
 /**
  * <p>

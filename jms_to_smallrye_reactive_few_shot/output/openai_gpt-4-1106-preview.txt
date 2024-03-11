@@ -1,27 +1,24 @@
 ## Reasoning
 
-To migrate the Java EE Message Driven Bean (MDB) to Quarkus, we need to address the issue that Quarkus does not support EJBs and instead uses CDI (Contexts and Dependency Injection) for its beans. The `@MessageDriven` annotation will be replaced with a CDI scope annotation, and we will use the MicroProfile Reactive Messaging API to handle the message-driven aspect.
+To migrate the given Java EE Message Driven Bean (MDB) to Quarkus, we need to follow these steps:
 
-Here are the steps we will follow:
+1. **Replace `@MessageDriven` with `@ApplicationScoped`:** Quarkus does not support EJBs, including MDBs. Instead, we use CDI (Contexts and Dependency Injection) beans. The `@ApplicationScoped` annotation indicates that the bean is created once for the application's lifecycle, which is a suitable replacement for the singleton nature of MDBs.
 
-1. Replace the `@MessageDriven` annotation with `@ApplicationScoped` to define the bean as a CDI managed bean with application scope.
-2. Remove the `MessageListener` interface and its `onMessage` method signature, as we will use the MicroProfile Reactive Messaging API to handle messages.
-3. Use the `@Incoming` annotation from MicroProfile Reactive Messaging to indicate the channel from which the messages will be consumed.
-4. Replace the Java Util Logging (JUL) logger with Quarkus' logging mechanism, which uses JBoss Logging under the hood.
-5. Update the `pom.xml` file to include the necessary dependencies for Quarkus and MicroProfile Reactive Messaging.
-6. Remove unused imports related to JMS and EJBs, and add imports for Quarkus logging and MicroProfile Reactive Messaging.
+2. **Remove `MessageListener` Interface and `onMessage` Method Signature:** In Quarkus, we don't implement the `MessageListener` interface for reactive messaging. Instead, we use methods annotated with `@Incoming` to denote the channel from which the messages will be consumed.
 
-### Dependencies to Add in `pom.xml`
+3. **Replace Logging:** The standard `java.util.logging.Logger` is replaced with `io.quarkus.logging.Log` which is a simplified logging API provided by Quarkus.
 
-- `quarkus-smallrye-reactive-messaging` for MicroProfile Reactive Messaging support.
-- `quarkus-logging` if not already present, for logging support.
+4. **Use `@Incoming` Annotation:** The `@Incoming` annotation is used to define the channel that the method will be listening to. The channel name should match the configuration in the `application.properties` file for the message queue.
 
-### Imports to Update
+5. **Update `pom.xml`:** Ensure that the Quarkus dependencies for reactive messaging are included in the `pom.xml` file. This typically includes `quarkus-smallrye-reactive-messaging-jms`.
 
-- Remove `java.util.logging.Logger` and replace it with `io.quarkus.logging.Log`.
-- Remove `javax.ejb.MessageDriven`, `javax.ejb.ActivationConfigProperty`, `javax.jms.JMSException`, `javax.jms.Message`, `javax.jms.MessageListener`, and `javax.jms.TextMessage`.
-- Add `org.eclipse.microprofile.reactive.messaging.Incoming`.
-- Add `jakarta.enterprise.context.ApplicationScoped`.
+6. **Configuration Changes:** The `application.properties` file should be updated to include the configuration for the JMS connector, replacing the MDB activation configuration properties.
+
+7. **Handle Exceptions:** Exception handling should be adapted to the Quarkus way, ensuring that any JMSExceptions are handled appropriately.
+
+8. **Remove Unused Imports:** Since we are changing the implementation, some imports will no longer be necessary and should be removed.
+
+Now, let's apply these changes to the provided input file.
 
 ## Updated File
 
@@ -29,8 +26,8 @@ Here are the steps we will follow:
 package org.jboss.as.quickstarts.mdb;
 
 import io.quarkus.logging.Log;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
 import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
 
 /**
  * <p>
@@ -49,4 +46,24 @@ public class HelloWorldQueueMDB {
 }
 ```
 
-In the updated file, we have made the necessary changes to migrate the Java EE MDB to a Quarkus CDI bean that can handle messages using MicroProfile Reactive Messaging. The `@Incoming` annotation specifies the channel name, which should match the configuration in the `application.properties` file for the message queue connection details.
+### Additional Notes:
+
+- The `@Incoming` annotation's value `"HELLOWORLDMDBQueue"` should match the configured channel name in `application.properties`. You will need to configure the channel to connect to the JMS queue.
+- The `application.properties` file should include the necessary configuration for the JMS connector, which might look something like this:
+
+```properties
+mp.messaging.incoming.HELLOWORLDMDBQueue.connector=smallrye-jms
+mp.messaging.incoming.HELLOWORLDMDBQueue.destination=queue/HELLOWORLDMDBQueue
+```
+
+- Ensure that the Quarkus extension for SmallRye Reactive Messaging JMS is added to your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-smallrye-reactive-messaging-jms</artifactId>
+</dependency>
+```
+
+- The `Logger` import and any other unused imports should be removed from the file.
+- Exception handling should be reviewed and adapted to the Quarkus reactive messaging paradigm. The example does not include exception handling, but in a real-world scenario, you would need to consider how to handle exceptions that occur during message processing.

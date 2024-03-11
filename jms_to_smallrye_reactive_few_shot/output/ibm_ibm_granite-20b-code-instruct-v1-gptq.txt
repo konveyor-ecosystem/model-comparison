@@ -1,80 +1,11 @@
 
-# Input information
-## Issue found from static code analysis of the Java EE code which needs to be fixed to migrate to Quarkus
-Issue to fix:  "Enterprise Java Beans (EJBs) are not supported in Quarkus. CDI must be used.
- Please replace the `@MessageDriven` annotation with a CDI scope annotation like `@ApplicationScoped`."
+### Reasoning
+1. Enterprise Java Beans (EJBs) are not supported in Quarkus. CDI must be used.
+Please replace the `@MessageDriven` annotation with a CDI scope annotation like `@ApplicationScoped`.
 
-## Solved Example Filename
-Filename: "src/main/java/org/jboss/as/quickstarts/cmt/mdb/HelloWorldMDB.java"
-
-## Solved Example Git Diff 
-This diff of the solved example shows what changes we made in past to address a similar problem.
-Please consider this heavily in your response.
-```diff
-@@ -16,14 +16,10 @@
-  */
- package org.jboss.as.quickstarts.cmt.mdb;
- 
--import java.util.logging.Logger;
-+import org.eclipse.microprofile.reactive.messaging.Incoming;
- 
--import javax.ejb.ActivationConfigProperty;
--import javax.ejb.MessageDriven;
--import javax.jms.JMSException;
--import javax.jms.Message;
--import javax.jms.MessageListener;
--import javax.jms.TextMessage;
-+import io.quarkus.logging.Log;
-+import jakarta.enterprise.context.ApplicationScoped;
- 
- /**
-  * <p>
-@@ -33,28 +29,11 @@ import javax.jms.TextMessage;
-  * @author Serge Pagop (spagop@redhat.com)
-  *
-  */
--@MessageDriven(name = "HelloWorldMDB", activationConfig = {
--    @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
--    @ActivationConfigProperty(propertyName = "destination", propertyValue = "queue/CMTQueue"),
--    @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge") })
--public class HelloWorldMDB implements MessageListener {
-+@ApplicationScoped
-+public class HelloWorldMDB {
- 
--    private static final Logger LOGGER = Logger.getLogger(HelloWorldMDB.class.toString());
--
--    /**
--     * @see MessageListener#onMessage(Message)
--     */
--    public void onMessage(Message rcvMessage) {
--        TextMessage msg = null;
--        try {
--            if (rcvMessage instanceof TextMessage) {
--                msg = (TextMessage) rcvMessage;
--                LOGGER.info("Received Message: " + msg.getText());
--            } else {
--                LOGGER.warning("Message of wrong type: " + rcvMessage.getClass().getName());
--            }
--        } catch (JMSException e) {
--            throw new RuntimeException(e);
--        }
-+    @Incoming("CMTQueue")
-+    public void onMessage(String msg) {
-+        Log.info("Received Message: " + msg);
-     }
- }
-
-    ```
-
-    ## Input file name
-    Filename: "src/main/java/org/jboss/as/quickstarts/mdb/HelloWorldQueueMDB.java"
-
-    ## Input Line number of the issue first appearing in the Java EE code source code example below
-    Line number: 34
-    
-    ## Input source code file contents for "src/main/java/org/jboss/as/quickstarts/mdb/HelloWorldQueueMDB.java"
-    ```java 
-    /*
+### Updated File
+```java
+/*
  * JBoss, Home of Professional Open Source
  * Copyright 2015, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
@@ -90,15 +21,11 @@ Please consider this heavily in your response.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.as.quickstarts.mdb;
+package org.jboss.as.quickstarts.cmt.mdb;
 
-import java.util.logging.Logger;
-import javax.ejb.ActivationConfigProperty;
-import javax.ejb.MessageDriven;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.MessageListener;
-import javax.jms.TextMessage;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import io.quarkus.logging.Log;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * <p>
@@ -107,43 +34,12 @@ import javax.jms.TextMessage;
  *
  * @author Serge Pagop (spagop@redhat.com)
  */
-@MessageDriven(name = "HelloWorldQueueMDB", activationConfig = {
-        @ActivationConfigProperty(propertyName = "destinationLookup", propertyValue = "queue/HELLOWORLDMDBQueue"),
-        @ActivationConfigProperty(propertyName = "destinationType", propertyValue = "javax.jms.Queue"),
-        @ActivationConfigProperty(propertyName = "acknowledgeMode", propertyValue = "Auto-acknowledge")})
-public class HelloWorldQueueMDB implements MessageListener {
+@ApplicationScoped
+public class HelloWorldMDB {
 
-    private static final Logger LOGGER = Logger.getLogger(HelloWorldQueueMDB.class.toString());
-
-    /**
-     * @see MessageListener#onMessage(Message)
-     */
-    public void onMessage(Message rcvMessage) {
-        TextMessage msg = null;
-        try {
-            if (rcvMessage instanceof TextMessage) {
-                msg = (TextMessage) rcvMessage;
-                LOGGER.info("Received Message from queue: " + msg.getText());
-            } else {
-                LOGGER.warning("Message of wrong type: " + rcvMessage.getClass().getName());
-            }
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
-        }
+    @Incoming("CMTQueue")
+    public void onMessage(String msg) {
+        Log.info("Received Message: " + msg);
     }
 }
-
-    ```
-
-    # Output Instructions
-    Structure your ouput in Markdown format such as:
-
-    ## Reasoning
-    Write the step by step reasoning in this markdown section.
-    If you are unsure of a step or reasoning, clearly state you are unsure and why.
-
-    ## Updated File
-    ```java
-        Write the updated file for Quarkus in this section
-    ```
-
+```
